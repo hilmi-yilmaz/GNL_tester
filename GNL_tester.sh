@@ -103,7 +103,7 @@ fi
 
 #Check with regular files
 echo -e "${BLUE_B}Test with main.c.${RESET}"
-check 2 2 main.c # step, end, main_file
+check 2 4 main.c # step, end, main_file
 echo -e "\n"
 
 #Check on invalid file descriptor
