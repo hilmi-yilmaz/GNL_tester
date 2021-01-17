@@ -1,20 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: hyilmaz <marvin@codam.nl>                    +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2020/11/24 10:49:53 by hyilmaz       #+#    #+#                 */
-/*   Updated: 2020/12/16 20:02:08 by hyilmaz       ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "../src/get_next_line.h"
+#include "src/get_next_line.h"
 
 int		main(int argc, char **argv)
 {
@@ -22,23 +10,43 @@ int		main(int argc, char **argv)
 	int 	result;
 	char	*line;
 	
-	if (argc != 2)
-		return (0);
-	fd = open(*(argv + 1), O_RDONLY);
-	result = 1;
-	line = NULL;
-	while (result != 0)
+	if (argc < 2)
+        exit (1);
+    
+    /*
+    ** Opening the files to read from and write the return values to.
+    */
+
+    fd = open(*(argv + 1), O_RDONLY);
+    if (fd == -1)
+        exit(1);
+    
+    /*
+    ** Initializing some values
+    */
+
+    result = 1;
+    line = NULL;
+
+    /*
+    ** Read the lines from fd and store in *line.
+    ** The return values of get_next_line() are stored in fd_res.
+    */
+
+	while (result == 1)
 	{
 		result = get_next_line(fd, &line);
-		if (result == 1)
-			printf("%s\n",line);
-		//printf("result = %d\n\n", result);
-		if (result == -1 || result == 0)
-			break ;
+		printf("%s",line);
+		printf("|%d|\n", result);
 		free(line);
 		line = NULL;
 	}
+
+    /*
+    ** Close the file and free line.
+    */
+
 	close(fd);
-	free(line);
+
 	return (0);
 }
