@@ -1,4 +1,2 @@
 GNL_real_results.sh
-logs/valgrind/
-logs/your_results/
-logs/diffs
+logs/

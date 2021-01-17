@@ -76,7 +76,7 @@ test ()
     ./$OUTPUT $2 > logs/your_results/${test_name}_with_buffer_size_$3
 
     #Checking for differences in real_results and your_results.
-    diff logs/your_results/${test_name}_with_buffer_size_$3 logs/real_results/${test_name}_with_buffer_size_$3 >> logs/diffs/${test_name}_with_buffer_size_$3
+    diff logs/your_results/${test_name}_with_buffer_size_$3 real_results/${test_name}_with_buffer_size_$3 >> logs/diffs/${test_name}_with_buffer_size_$3
     if [[ ! $? == 0 ]]; then
 		echo -e "		${RED}Does not work with ${test_name}_with_buffer_size_$3. The output of your program doesn't match the actual result." >&2
 	else
@@ -105,7 +105,7 @@ echo -e "	${CYAN_B}Testing on simple1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/simple1 $buffer
+    test mains/main.c tests/simple1 $buffer
 done
 
 # ---------------- simple2 ----------------
@@ -113,7 +113,7 @@ echo -e "	${CYAN_B}Testing on simple2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/simple2 $buffer
+    test mains/main.c tests/simple2 $buffer
 done
 
 # ---------------- simple3 ----------------
@@ -121,7 +121,7 @@ echo -e "	${CYAN_B}Testing on simple3${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/simple3 $buffer
+    test mains/main.c tests/simple3 $buffer
 done
 
 # ---------------- medium1 ----------------
@@ -129,7 +129,7 @@ echo -e "	${CYAN_B}Testing on medium1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/medium1 $buffer
+    test mains/main.c tests/medium1 $buffer
 done
 
 # ---------------- medium2 ----------------
@@ -137,7 +137,7 @@ echo -e "	${CYAN_B}Testing on medium2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100 500)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/medium2 $buffer
+    test mains/main.c tests/medium2 $buffer
 done
 
 # ---------------- hard1 ----------------
@@ -145,7 +145,7 @@ echo -e "	${CYAN_B}Testing on hard1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/hard1 $buffer
+    test mains/main.c tests/hard1 $buffer
 done
 
 # ---------------- hard2 ----------------
@@ -153,7 +153,7 @@ echo -e "	${CYAN_B}Testing on hard2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/hard2 $buffer
+    test mains/main.c tests/hard2 $buffer
 done
 
 # ---------------- hard3 ----------------
@@ -161,7 +161,7 @@ echo -e "	${CYAN_B}Testing on hard3${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100 4000 10000)
 for buffer in ${BUFFER_SIZE[@]};
 do
-    test test_main.c tests/hard3 $buffer
+    test mains/main.c tests/hard3 $buffer
 done
 
 #Clean

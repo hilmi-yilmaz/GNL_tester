@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "src/get_next_line.h"
+#include "../src/get_next_line.h"
 
 int		main(int argc, char **argv)
 {
