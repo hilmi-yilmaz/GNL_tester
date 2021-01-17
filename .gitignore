@@ -1,2 +1,5 @@
 GNL_real_results.sh
 logs/
+src/get_next_line.c
+src/get_next_line.h
+src/get_next_line_utils.c
