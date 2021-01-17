@@ -2,12 +2,16 @@
 
 #This is a tester for the get_next_line project in the 42 curriculum.
 
+#These parameters can be changed by the user of this tester
+VALGRIND="0"    #To check with Valgrind, change to "1".
+
 #Colors
-GREEN="\e[1;32m"
-RED="\e[1;31m"
-CYAN_B="\e[1;46m"
-BLUE_B="\e[1;44m"
-RESET="\e[0m"
+GREEN="\033[1;32m"
+RED="\033[1;31m"
+BLUE="\033[1;34m"
+CYAN_B="\033[1;46m"
+BLUE_B="\033[1;44m"
+RESET="\033[0m"
 
 #Define variables
 CC=clang
@@ -78,21 +82,23 @@ test ()
     #Checking for differences in real_results and your_results.
     diff logs/your_results/${test_name}_with_buffer_size_$3 real_results/${test_name}_with_buffer_size_$3 >> logs/diffs/${test_name}_with_buffer_size_$3
     if [[ ! $? == 0 ]]; then
-		echo -e "		${RED}Does not work with ${test_name}_with_buffer_size_$3. The output of your program doesn't match the actual result." >&2
+		echo -e "	${RED}Does not work with ${test_name}_with_buffer_size_$3. The output of your program doesn't match the actual result." >&2
 	else
-		echo -e "		${GREEN}Passed with BUFFER_SIZE=$3.${RESET}"
+		echo -e "	${GREEN}Passed with BUFFER_SIZE=$3.${RESET}"
         rm -f logs/diffs/${test_name}_with_buffer_size_$3
     fi
 
-    #Check for memory leaks with valgrind
-    valgrind $VALGRIND_FLAGS ./$OUTPUT $2 >> logs/valgrind/$test_name 2>&1
+    #Check for memory leaks with valgrind if enabled
+    if [[ "$VALGRIND" == "1" ]]; then
 
-    #If we have a leak or other memory error
-    grep -q "no leaks are possible" logs/valgrind/$test_name
-    if [[ ! $? == 0 ]]; then
-        echo -e "		${RED}You have a leak! Look in logs/valgrind/$test_name to find where the leak is.${RESET}" >&2
-    else
-        rm -rf logs/valgrind/$test_name
+        valgrind $VALGRIND_FLAGS ./$OUTPUT $2 >> logs/valgrind/$test_name 2>&1
+        #If we have a leak or other memory error
+        grep -q "no leaks are possible" logs/valgrind/$test_name
+        if [[ ! $? == 0 ]]; then
+            echo -e "	${RED}You have a leak! Look in logs/valgrind/$test_name to find where the leak is.${RESET}" >&2
+        else
+            rm -rf logs/valgrind/$test_name
+        fi
     fi
 
     return
@@ -101,7 +107,7 @@ test ()
 # Call the test function on different test files
 
 # ---------------- simple1 ----------------
-echo -e "	${CYAN_B}Testing on simple1${RESET}"
+echo -e "${CYAN_B}Testing on simple1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -109,7 +115,7 @@ do
 done
 
 # ---------------- simple2 ----------------
-echo -e "	${CYAN_B}Testing on simple2${RESET}"
+echo -e "${CYAN_B}Testing on simple2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -117,7 +123,7 @@ do
 done
 
 # ---------------- simple3 ----------------
-echo -e "	${CYAN_B}Testing on simple3${RESET}"
+echo -e "${CYAN_B}Testing on simple3${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -125,7 +131,7 @@ do
 done
 
 # ---------------- medium1 ----------------
-echo -e "	${CYAN_B}Testing on medium1${RESET}"
+echo -e "${CYAN_B}Testing on medium1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 11 12 13 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -133,7 +139,7 @@ do
 done
 
 # ---------------- medium2 ----------------
-echo -e "	${CYAN_B}Testing on medium2${RESET}"
+echo -e "${CYAN_B}Testing on medium2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100 500)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -141,7 +147,7 @@ do
 done
 
 # ---------------- hard1 ----------------
-echo -e "	${CYAN_B}Testing on hard1${RESET}"
+echo -e "${CYAN_B}Testing on hard1${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -149,7 +155,7 @@ do
 done
 
 # ---------------- hard2 ----------------
-echo -e "	${CYAN_B}Testing on hard2${RESET}"
+echo -e "${CYAN_B}Testing on hard2${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100)
 for buffer in ${BUFFER_SIZE[@]};
 do
@@ -157,11 +163,49 @@ do
 done
 
 # ---------------- hard3 ----------------
-echo -e "	${CYAN_B}Testing on hard3${RESET}"
+echo -e "${CYAN_B}Testing on hard3${RESET}"
 BUFFER_SIZE=(0 1 2 3 10 50 100 4000 10000)
 for buffer in ${BUFFER_SIZE[@]};
 do
     test mains/main.c tests/hard3 $buffer
+done
+
+# ---------------- Invalid fd ----------------
+echo -e "${CYAN_B}Testing with invalid fd${RESET}"
+BUFFER_SIZE=(0 1 2 3 10)
+for buffer in ${BUFFER_SIZE[@]};
+do
+    #Compiling with ASAN
+	$CC $C_FLAGS -fsanitize=address -D BUFFER_SIZE=$buffer mains/invalid_fd_main.c $SRC -o $OUTPUT
+
+    #Redirect output to result
+    ./$OUTPUT > logs/your_results/invalid_fd_with_buffer_size_$buffer
+
+    #Check for differences
+    diff logs/your_results/invalid_fd_with_buffer_size_$buffer real_results/invalid_fd_with_buffer_size_$buffer >> logs/diffs/invalid_fd__with_buffer_size_$buffer
+    if [[ ! $? == 0 ]]; then
+		echo -e "	${RED}Does not work with invalid_fd_with_buffer_size_$buffer. The output of your program doesn't match the actual result." >&2
+	else
+		echo -e "	${GREEN}Passed with BUFFER_SIZE=$buffer.${RESET}"
+        rm -f logs/diffs/invalid_fd_with_buffer_size_$buffer
+    fi
+
+done
+
+# ---------------- stdin ----------------
+echo -e "${CYAN_B}Testing on stdin${RESET}"
+BUFFER_SIZE=(1 10)
+for buffer in ${BUFFER_SIZE[@]};
+do
+    #Compiling with ASAN
+	$CC $C_FLAGS -fsanitize=address -D BUFFER_SIZE=$buffer mains/stdin_main.c $SRC -o $OUTPUT
+
+    #Run executable
+    echo -e "${BLUE}Type ctrl-D when you are done.${RESET}"
+    echo -e "${GREEN}BUFFER_SIZE=$buffer${RESET}"
+    echo ""
+    ./$OUTPUT
+
 done
 
 #Clean
