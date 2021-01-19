@@ -14,6 +14,16 @@ Your project will be tested on some test files which you can find in the _tests/
 
 This tester checks for memory error with AdressSanitizer (ASAN) using the -fsanitize=address flag. You can also use valgrind to check for leaks if this is available on your system. To activate valgrind go into the _GNL_tester.sh_ file and change _valgrind="0"_ to valgrind="1".
 
+## Workings
+
+This tester works by comparing your output to the output of get_next_line projects which passed Moulinette. It tests for output and return values of your function. An example: if a testfile contains only "42Network" in the first line, the output of the tester will be:
+
+42Network|1|<br>
+|0|
+
+which shows the return value between pipes.
+
+
 ## Installation and Usage
 
 Clone this repository. Go into the root folder of the repository and do the following:
